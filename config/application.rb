@@ -18,6 +18,8 @@ require "action_cable/engine"
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
+# Load .env variables
+Dotenv::Railtie.load
 
 module SocietyGate
   class Application < Rails::Application
@@ -36,5 +38,16 @@ module SocietyGate
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+    config.active_record.schema_format = :sql
+    config.generators do |g|
+      g.test_framework :rspec,
+                        fixtures: true,
+                        view_specs: false,
+                        helper_specs: false,
+                        routing_specs: false,
+                        controller_specs: false,
+                        request_specs: true
+      g.fixture_replacement :factory_bot, dir: "spec/factories"
+    end
   end
 end
